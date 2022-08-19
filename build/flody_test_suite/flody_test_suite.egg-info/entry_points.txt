@@ -1,0 +1,5 @@
+[console_scripts]
+flody_test_suite_node = flody_test_suite.flody_test_suite_node:main
+pub = flody_test_suite.pub:main
+sub = flody_test_suite.sub:main
+

@@ -1,0 +1,6 @@
+source;share/flody_test_suite/hook/pythonpath.ps1
+source;share/flody_test_suite/hook/pythonpath.dsv
+source;share/flody_test_suite/hook/pythonpath.sh
+source;share/flody_test_suite/hook/ament_prefix_path.ps1
+source;share/flody_test_suite/hook/ament_prefix_path.dsv
+source;share/flody_test_suite/hook/ament_prefix_path.sh
