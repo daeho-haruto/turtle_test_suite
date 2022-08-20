@@ -1,11 +1,12 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.action import ActionServer
 from rclpy.exceptions import ParameterNotDeclaredException
 
+from msg_srv_action_interface_example.action import TurtleStart
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Vector3
-
 from std_msgs.msg import Int16
 
 class FlodyTestSuite(Node):
@@ -18,13 +19,13 @@ class FlodyTestSuite(Node):
             'turtle1/pose',
             self.pose_callback,
             10)
-
-        #start subcriber
-        self.subscriber_start = self.create_subscription(
-            Int16,
-            'turtle1/start',
-            self.start_sub_callback,
-            10)
+        
+        #action server
+        self._action_server = ActionServer(
+            self,
+            TurtleStart,
+            'turtlestart',
+            self.start_act_callback)
 
         #cmd_vel publisher
         self.publisher_cmdvel = self.create_publisher(
@@ -39,22 +40,30 @@ class FlodyTestSuite(Node):
         self.declare_parameter('distance',0.0)
         self.param =  self.get_parameter('distance').value
 
-    def start_sub_callback(self, start):
-        global arrive_pose
-        global first_pose
+    def start_act_callback(self, goal_handle):
+        self.get_logger().info('Excuting goal...')
 
-        start = Int16()
-        num = Int16()
-        num = 1
+        #test code - 글로벌 없애는 작업에서 수정예정
+        feedback_msg = TurtleStart.Feedback()
+        feedback_msg.pose = 0.0
 
-        if start != num  :
-            arrive_pose = Pose()
-            first_pose = Pose()
-            arrive_pose.x = self.pose.x + self.param
-            arrive_pose.theta = 3.14
-            first_pose = self.pose
-            # self.get_logger().info("param : {0}".format(self.param))    
+        if goal_handle.request.order == "go":
+            for i in range(0, 5):
+                feedback_msg.pose = feedback_msg.pose + 1
+                self.get_logger().info('Feedback: {0}'.format(feedback_msg.pose))
+                goal_handle.publish_feedback(feedback_msg)
+                time.sleep(1)
 
+            goal_handle.succeed()
+        else :
+            self.get_logger().info('please check the data..')
+
+        result = TurtleStart.Result()
+        result.goal = feedback_msg.pose
+        return result
+
+
+        
     def pose_callback(self, pose):
         self.pose = pose
 
@@ -75,12 +84,6 @@ class FlodyTestSuite(Node):
                 cmd_vel.angular.z = 0.1
                 self.publisher_cmdvel.publish(cmd_vel)
                 arrive_pose.x = first_pose.x
-
-            """
-            elif arrive_pose.x < self.pose.x: #돌아가지만 멈춤 불가
-                cmd_vel.linear.x = 1.0
-                self.publisher_cmdvel.publish(cmd_vel)
-            """
             
             else :
                 cmd_vel.linear.x = 0.0
