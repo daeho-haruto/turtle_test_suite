@@ -1,1 +1,0 @@
-/home/daeho/practice_ws/build/msg_srv_action_interface_example/rosidl_generator_py/msg_srv_action_interface_example/action/_turtle_start_s.c
