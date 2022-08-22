@@ -98,7 +98,6 @@ class FlodyTestSuite(Node):
 
         self.publisher_cmdvel.publish(cmd_vel)
 
-        
 def main(args=None):
     rclpy.init(args=args)
 
