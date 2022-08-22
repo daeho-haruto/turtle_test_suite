@@ -2,7 +2,6 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionServer
 from rclpy.exceptions import ParameterNotDeclaredException
-from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 
 from msg_srv_action_interface_example.action import TurtleStart
@@ -18,10 +17,6 @@ class FlodyTestSuite(Node):
     def __init__(self):
         super().__init__('flody_test_suite_node')
 
-        sub_cb_group = MutuallyExclusiveCallbackGroup() #공부 필요 
-        act_cb_group = None  
-        pub_cb_group = None
-
         self.declare_parameter('distance',0.0)
         self.param =  self.get_parameter('distance').value
 
@@ -30,23 +25,21 @@ class FlodyTestSuite(Node):
             Pose,
             'turtle1/pose',
             self.pose_callback,
-            10,
-            callback_group=sub_cb_group)
+            10)
         
         #action server
         self._action_server = ActionServer(
             self,
             TurtleStart,
             'turtlestart',
-            self.start_act_callback,
-            callback_group=act_cb_group)
+            self.start_act_callback)
 
         #cmd_vel publisher
         self.publisher_cmdvel = self.create_publisher(
             Twist,
             'turtle1/cmd_vel', 
             10)
-        self.timer = self.create_timer(0.1, self.cmdVel_callback, callback_group=pub_cb_group)
+        self.timer = self.create_timer(0.1, self.cmdVel_callback)
 
     def start_act_callback(self, goal_handle):
         self.get_logger().info('Excuting goal...')
