@@ -8,11 +8,12 @@ from rclpy.executors import MultiThreadedExecutor
 from msg_srv_action_interface_example.action import TurtleStart
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Int16
 
 class FlodyTestSuite(Node):
 
     arrive_pose = Pose()
+    arrive_list = []
+    arrive_idx = 0
 
     def __init__(self):
         super().__init__('flody_test_suite_node')
@@ -53,19 +54,22 @@ class FlodyTestSuite(Node):
         feedback_msg = TurtleStart.Feedback()
         
         if goal_handle.request.order == "go":
+            # !!!
             FlodyTestSuite.arrive_pose.x = self.pose.x + self.param
-            FlodyTestSuite.arrive_pose.theta = 3.14059265359
-        
+            FlodyTestSuite.arrive_pose.theta = self.pose.theta 
+            FlodyTestSuite.arrive_list = [FlodyTestSuite.arrive_pose.x, FlodyTestSuite.arrive_pose.theta, self.pose.x]
+            
             while True: 
+                if FlodyTestSuite.arrive_idx == 3:
+                    break
                 feedback_msg.pose = self.pose.x
-                self.get_logger().info('arrive_pose.x: {0} pose.x: {1} parm: {2}'.format(FlodyTestSuite.arrive_pose.x,self.pose.x,self.param))
-                # self.get_logger().info('Feedback: {0}'.format(feedback_msg.pose))
+                # self.get_logger().info('arrive_pose.x: {0} pose.x: {1} param: {2}'.format(FlodyTestSuite.arrive_pose.x,self.pose.x,self.param))
+                self.get_logger().info('Feedback: {0}'.format(feedback_msg.pose))
                 
                 goal_handle.publish_feedback(feedback_msg)
 
-                if self.pose.x >= FlodyTestSuite.arrive_pose.x:
-                    break
             # self.get_logger().info('pose: {0}'.format(self.pose.x))
+
             feedback_msg.pose = self.pose.x
 
             goal_handle.succeed()
@@ -81,20 +85,26 @@ class FlodyTestSuite(Node):
 
     def cmdVel_callback(self):
         cmd_vel = Twist()
+        if FlodyTestSuite.arrive_list:
+            if FlodyTestSuite.arrive_idx == 0 :
+                if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] >= self.pose.x :
+                    cmd_vel.linear.x = 1.0
+                else: FlodyTestSuite.arrive_idx = 1
 
-        #수정해야하는 부분들 
-        if FlodyTestSuite.arrive_pose.x >= self.pose.x :
-            cmd_vel.linear.x = 0.1
-            self.publisher_cmdvel.publish(cmd_vel) 
+            elif FlodyTestSuite.arrive_idx == 1 :
+                if  FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= self.pose.theta :
+                    cmd_vel.angular.z = 0.1
+                else: FlodyTestSuite.arrive_idx = 2
 
-        # if FlodyTestSuite.arrive_pose.theta >= self.pose.theta : 
-        #     cmd_vel.angular.z = 0.01
-        #     self.publisher_cmdvel.publish(cmd_vel)
-        
-        else :
-            cmd_vel.linear.x = 0.0
-            cmd_vel.linear.z = 0.0
-            self.publisher_cmdvel.publish(cmd_vel)
+            elif FlodyTestSuite.arrive_idx == 2 :
+                if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= self.pose.x : 
+                    cmd_vel.linear.x = 1.0
+                else: FlodyTestSuite.arrive_idx = 3
+        else:
+            pass
+
+        self.publisher_cmdvel.publish(cmd_vel)
+
         
 def main(args=None):
     rclpy.init(args=args)
@@ -110,14 +120,6 @@ def main(args=None):
         node.get_logger().info('Keyboard interrupt, shutting down.\n')
     node.destroy_node()
     rclpy.shutdown()
-    
-    # flody_test_suite = FlodyTestSuite()
-
-    # rclpy.spin(flody_test_suite)
-
-    # flody_test_suite.destroy_node()
-
-    # rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
