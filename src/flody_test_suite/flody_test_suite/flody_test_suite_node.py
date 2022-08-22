@@ -19,6 +19,7 @@ class FlodyTestSuite(Node):
 
         self.declare_parameter('distance',0.0)
         self.param =  self.get_parameter('distance').value
+        self.cmd_vel = Twist()
 
         #pose subscriber
         self.subscriber_pose = self.create_subscription(
@@ -55,19 +56,46 @@ class FlodyTestSuite(Node):
             while True: 
                 if FlodyTestSuite.arrive_idx == 3:
                     break
-                feedback_msg.pose = self.pose.x
+                
+                feedback_msg.x = self.pose.x
+                feedback_msg.y = self.pose.y
+                feedback_msg.theta = self.pose.theta
+
                 # self.get_logger().info('arrive_pose.x: {0} pose.x: {1} param: {2}'.format(FlodyTestSuite.arrive_pose.x,self.pose.x,self.param))
-                self.get_logger().info('Feedback: {0}'.format(feedback_msg.pose))
+                self.get_logger().info('Feedback: x: {0} y: {1} theta: {2}'.format(feedback_msg.x,feedback_msg.y,feedback_msg.theta))
+
+                if FlodyTestSuite.arrive_list:
+                    if FlodyTestSuite.arrive_idx == 0 :
+                        if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] >= feedback_msg.x :
+                            self.cmd_vel.linear.x = 1.0
+                            self.cmd_vel.angular.z = 0.0
+                        else: FlodyTestSuite.arrive_idx = 1
+
+                    elif FlodyTestSuite.arrive_idx == 1 :
+                        if  FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= feedback_msg.theta :
+                            self.cmd_vel.linear.x = 0.0
+                            self.cmd_vel.angular.z = 0.1
+                        else: FlodyTestSuite.arrive_idx = 2
+
+                    elif FlodyTestSuite.arrive_idx == 2 :
+                        if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= feedback_msg.x : 
+                            self.cmd_vel.linear.x = 1.0
+                            self.cmd_vel.angular.z = 0.0
+                        else: FlodyTestSuite.arrive_idx = 3
+                else:
+                    pass
                 
                 goal_handle.publish_feedback(feedback_msg)
 
             # self.get_logger().info('pose: {0}'.format(self.pose.x))
 
-            feedback_msg.pose = self.pose.x
+            feedback_msg.x = self.pose.x
+            self.cmd_vel.linear.x = 0.0
+            self.cmd_vel.angular.z = 0.0
 
             goal_handle.succeed()
             result = TurtleStart.Result()
-            result.goal = feedback_msg.pose
+            result.goal = feedback_msg.x
             return result
 
         else :
@@ -77,26 +105,8 @@ class FlodyTestSuite(Node):
         self.pose = pose
 
     def cmdVel_callback(self):
-        cmd_vel = Twist()
-        if FlodyTestSuite.arrive_list:
-            if FlodyTestSuite.arrive_idx == 0 :
-                if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] >= self.pose.x :
-                    cmd_vel.linear.x = 1.0
-                else: FlodyTestSuite.arrive_idx = 1
 
-            elif FlodyTestSuite.arrive_idx == 1 :
-                if  FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= self.pose.theta :
-                    cmd_vel.angular.z = 0.1
-                else: FlodyTestSuite.arrive_idx = 2
-
-            elif FlodyTestSuite.arrive_idx == 2 :
-                if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= self.pose.x : 
-                    cmd_vel.linear.x = 1.0
-                else: FlodyTestSuite.arrive_idx = 3
-        else:
-            pass
-
-        self.publisher_cmdvel.publish(cmd_vel)
+        self.publisher_cmdvel.publish(self.cmd_vel)
 
 def main(args=None):
     rclpy.init(args=args)

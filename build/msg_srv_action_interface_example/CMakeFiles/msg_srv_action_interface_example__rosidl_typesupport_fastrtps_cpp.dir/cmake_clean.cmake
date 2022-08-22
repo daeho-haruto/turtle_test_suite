@@ -1,0 +1,13 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/msg_srv_action_interface_example__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/msg_srv_action_interface_example/action/detail/dds_fastrtps/turtle_start__type_support.cpp.o"
+  "CMakeFiles/msg_srv_action_interface_example__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/msg_srv_action_interface_example/action/detail/dds_fastrtps/turtle_start__type_support.cpp.o.d"
+  "libmsg_srv_action_interface_example__rosidl_typesupport_fastrtps_cpp.pdb"
+  "libmsg_srv_action_interface_example__rosidl_typesupport_fastrtps_cpp.so"
+  "rosidl_typesupport_fastrtps_cpp/msg_srv_action_interface_example/action/detail/dds_fastrtps/turtle_start__type_support.cpp"
+  "rosidl_typesupport_fastrtps_cpp/msg_srv_action_interface_example/action/detail/turtle_start__rosidl_typesupport_fastrtps_cpp.hpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/msg_srv_action_interface_example__rosidl_typesupport_fastrtps_cpp.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

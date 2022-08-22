@@ -1,0 +1,28 @@
+[0.347s] Invoking command in '/home/daeho/practice_ws/src/flody_test_suite': PYTHONPATH=/home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/flody_test_suite build --build-base /home/daeho/practice_ws/build/flody_test_suite/build install --prefix /home/daeho/practice_ws/install/flody_test_suite --record /home/daeho/practice_ws/build/flody_test_suite/install.log --single-version-externally-managed
+[0.493s] running egg_info
+[0.494s] writing ../../build/flody_test_suite/flody_test_suite.egg-info/PKG-INFO
+[0.494s] writing dependency_links to ../../build/flody_test_suite/flody_test_suite.egg-info/dependency_links.txt
+[0.494s] writing entry points to ../../build/flody_test_suite/flody_test_suite.egg-info/entry_points.txt
+[0.494s] writing requirements to ../../build/flody_test_suite/flody_test_suite.egg-info/requires.txt
+[0.494s] writing top-level names to ../../build/flody_test_suite/flody_test_suite.egg-info/top_level.txt
+[0.495s] reading manifest file '../../build/flody_test_suite/flody_test_suite.egg-info/SOURCES.txt'
+[0.496s] writing manifest file '../../build/flody_test_suite/flody_test_suite.egg-info/SOURCES.txt'
+[0.496s] running build
+[0.496s] running build_py
+[0.496s] copying flody_test_suite/flody_test_suite_node.py -> /home/daeho/practice_ws/build/flody_test_suite/build/lib/flody_test_suite
+[0.496s] running install
+[0.496s] running install_lib
+[0.497s] copying /home/daeho/practice_ws/build/flody_test_suite/build/lib/flody_test_suite/flody_test_suite_node.py -> /home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite
+[0.497s] byte-compiling /home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite/flody_test_suite_node.py to flody_test_suite_node.cpython-310.pyc
+[0.498s] running install_data
+[0.498s] running install_egg_info
+[0.499s] removing '/home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite-0.0.0-py3.10.egg-info' (and everything under it)
+[0.499s] Copying ../../build/flody_test_suite/flody_test_suite.egg-info to /home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite-0.0.0-py3.10.egg-info
+[0.500s] running install_scripts
+[0.513s] Installing flody_test_suite_node script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+[0.513s] Installing pub script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+[0.513s] Installing start_action_client script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+[0.513s] Installing start_action_server script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+[0.513s] Installing sub script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+[0.513s] writing list of installed files to '/home/daeho/practice_ws/build/flody_test_suite/install.log'
+[0.530s] Invoked command in '/home/daeho/practice_ws/src/flody_test_suite' returned '0': PYTHONPATH=/home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/flody_test_suite build --build-base /home/daeho/practice_ws/build/flody_test_suite/build install --prefix /home/daeho/practice_ws/install/flody_test_suite --record /home/daeho/practice_ws/build/flody_test_suite/install.log --single-version-externally-managed

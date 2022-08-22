@@ -1,0 +1,27 @@
+running egg_info
+writing ../../build/flody_test_suite/flody_test_suite.egg-info/PKG-INFO
+writing dependency_links to ../../build/flody_test_suite/flody_test_suite.egg-info/dependency_links.txt
+writing entry points to ../../build/flody_test_suite/flody_test_suite.egg-info/entry_points.txt
+writing requirements to ../../build/flody_test_suite/flody_test_suite.egg-info/requires.txt
+writing top-level names to ../../build/flody_test_suite/flody_test_suite.egg-info/top_level.txt
+reading manifest file '../../build/flody_test_suite/flody_test_suite.egg-info/SOURCES.txt'
+writing manifest file '../../build/flody_test_suite/flody_test_suite.egg-info/SOURCES.txt'
+running build
+running build_py
+copying flody_test_suite/start_action_client.py -> /home/daeho/practice_ws/build/flody_test_suite/build/lib/flody_test_suite
+running install
+running install_lib
+copying /home/daeho/practice_ws/build/flody_test_suite/build/lib/flody_test_suite/start_action_client.py -> /home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite
+byte-compiling /home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite/start_action_client.py to start_action_client.cpython-310.pyc
+running install_data
+running install_egg_info
+removing '/home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite-0.0.0-py3.10.egg-info' (and everything under it)
+Copying ../../build/flody_test_suite/flody_test_suite.egg-info to /home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite-0.0.0-py3.10.egg-info
+running install_scripts
+Installing action_server_node script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+Installing flody_test_suite_node script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+Installing pub script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+Installing start_action_client script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+Installing start_action_server script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+Installing sub script to /home/daeho/practice_ws/install/flody_test_suite/lib/flody_test_suite
+writing list of installed files to '/home/daeho/practice_ws/build/flody_test_suite/install.log'

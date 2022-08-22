@@ -1,16 +1,25 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.action import ActionServer
 from rclpy.exceptions import ParameterNotDeclaredException
+from rclpy.executors import MultiThreadedExecutor
 
+from msg_srv_action_interface_example.action import TurtleStart
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Vector3
-
-from std_msgs.msg import Int16
 
 class FlodyTestSuite(Node):
+
+    arrive_pose = Pose()
+    arrive_list = []
+    arrive_idx = 0
+
     def __init__(self):
         super().__init__('flody_test_suite_node')
+
+        self.declare_parameter('distance',0.0)
+        self.param =  self.get_parameter('distance').value
+        self.cmd_vel = Twist()
 
         #pose subscriber
         self.subscriber_pose = self.create_subscription(
@@ -18,85 +27,100 @@ class FlodyTestSuite(Node):
             'turtle1/pose',
             self.pose_callback,
             10)
-
-        #start subcriber
-        self.subscriber_start = self.create_subscription(
-            Int16,
-            'turtle1/start',
-            self.start_sub_callback,
-            10)
+        
+        #action server
+        self._action_server = ActionServer(
+            self,
+            TurtleStart,
+            'turtlestart',
+            self.start_act_callback)
 
         #cmd_vel publisher
         self.publisher_cmdvel = self.create_publisher(
             Twist,
             'turtle1/cmd_vel', 
             10)
-        timer_period = 0.1 
-        self.timer = self.create_timer(timer_period, self.cmdVel_callback)
+        self.timer = self.create_timer(0.1, self.cmdVel_callback)
 
-        self.pose = Pose()
+    def start_act_callback(self, goal_handle):
+        self.get_logger().info('Excuting goal...')
 
-        self.declare_parameter('distance',0.0)
-        self.param =  self.get_parameter('distance').value
+        feedback_msg = TurtleStart.Feedback()
+        
+        if goal_handle.request.order == "go":
+            # !!!
+            FlodyTestSuite.arrive_pose.x = self.pose.x + self.param
+            FlodyTestSuite.arrive_pose.theta = self.pose.theta 
+            FlodyTestSuite.arrive_list = [FlodyTestSuite.arrive_pose.x, FlodyTestSuite.arrive_pose.theta, self.pose.x]
+            
+            while True: 
+                if FlodyTestSuite.arrive_idx == 3:
+                    break
+                
+                feedback_msg.x = self.pose.x
+                feedback_msg.y = self.pose.y
+                feedback_msg.theta = self.pose.theta
 
-    def start_sub_callback(self, start):
-        global arrive_pose
-        global first_pose
+                # self.get_logger().info('arrive_pose.x: {0} pose.x: {1} param: {2}'.format(FlodyTestSuite.arrive_pose.x,self.pose.x,self.param))
+                self.get_logger().info('Feedback: x: {0} y: {1} theta: {2}'.format(feedback_msg.x,feedback_msg.y,feedback_msg.theta))
 
-        start = Int16()
-        num = Int16()
-        num = 1
+                if FlodyTestSuite.arrive_list:
+                    if FlodyTestSuite.arrive_idx == 0 :
+                        if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] >= feedback_msg.x :
+                            self.cmd_vel.linear.x = 1.0
+                            self.cmd_vel.angular.z = 0.0
+                        else: FlodyTestSuite.arrive_idx = 1
 
-        if start != num  :
-            arrive_pose = Pose()
-            first_pose = Pose()
-            arrive_pose.x = self.pose.x + self.param
-            arrive_pose.theta = 3.14
-            first_pose = self.pose
-            # self.get_logger().info("param : {0}".format(self.param))    
+                    elif FlodyTestSuite.arrive_idx == 1 :
+                        if  FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= feedback_msg.theta :
+                            self.cmd_vel.linear.x = 0.0
+                            self.cmd_vel.angular.z = 0.1
+                        else: FlodyTestSuite.arrive_idx = 2
+
+                    elif FlodyTestSuite.arrive_idx == 2 :
+                        if FlodyTestSuite.arrive_list[FlodyTestSuite.arrive_idx] <= feedback_msg.x : 
+                            self.cmd_vel.linear.x = 1.0
+                            self.cmd_vel.angular.z = 0.0
+                        else: FlodyTestSuite.arrive_idx = 3
+                else:
+                    pass
+                
+                goal_handle.publish_feedback(feedback_msg)
+
+            # self.get_logger().info('pose: {0}'.format(self.pose.x))
+
+            feedback_msg.x = self.pose.x
+            self.cmd_vel.linear.x = 0.0
+            self.cmd_vel.angular.z = 0.0
+
+            goal_handle.succeed()
+            result = TurtleStart.Result()
+            result.goal = feedback_msg.x
+            return result
+
+        else :
+            self.get_logger().info('please check the data..')
 
     def pose_callback(self, pose):
         self.pose = pose
 
     def cmdVel_callback(self):
-        global arrive_pose
-        global first_pose
 
-        cmd_vel = Twist()
+        self.publisher_cmdvel.publish(self.cmd_vel)
 
-        #수정해야하는 부분
-        try:
-            if arrive_pose.x >= self.pose.x :
-                cmd_vel.linear.x = 1.0
-                self.publisher_cmdvel.publish(cmd_vel)
-
-            elif 3.14 > self.pose.theta :
-                cmd_vel.angular.z = 0.1
-                self.publisher_cmdvel.publish(cmd_vel)
-                arrive_pose.x = first_pose.x
-
-            elif arrive_pose.x < self.pose.x:
-                cmd_vel.linear.x = 1.0
-                self.publisher_cmdvel.publish(cmd_vel)
-            
-            else :
-                cmd_vel.linear.x = 0.0
-                cmd_vel.linear.z = 0.0
-                self.publisher_cmdvel.publish(cmd_vel)
-
-        except NameError :
-            self.get_logger().info("*pass* x: {0}".format(self.pose.x))
-            pass
-        
 def main(args=None):
     rclpy.init(args=args)
 
-    flody_test_suite = FlodyTestSuite()
+    node = FlodyTestSuite()
+    executor = MultiThreadedExecutor()
+    executor.add_node(node)
 
-    rclpy.spin(flody_test_suite)
-
-    flody_test_suite.destroy_node()
-
+    try:
+        node.get_logger().info('Beginning client, shut down with CTRL-C')
+        executor.spin()
+    except KeyboardInterrupt:
+        node.get_logger().info('Keyboard interrupt, shutting down.\n')
+    node.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
