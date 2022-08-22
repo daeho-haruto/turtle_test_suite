@@ -1,4 +1,0 @@
-Invoking command in '/home/daeho/practice_ws/build/msg_srv_action_interface_example': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/daeho/practice_ws/build/msg_srv_action_interface_example -- -j16 -l16
-Invoked command in '/home/daeho/practice_ws/build/msg_srv_action_interface_example' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/daeho/practice_ws/build/msg_srv_action_interface_example -- -j16 -l16
-Invoking command in '/home/daeho/practice_ws/build/msg_srv_action_interface_example': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/daeho/practice_ws/build/msg_srv_action_interface_example
-Invoked command in '/home/daeho/practice_ws/build/msg_srv_action_interface_example' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/daeho/practice_ws/build/msg_srv_action_interface_example

@@ -1,5 +1,0 @@
-  File "/home/daeho/practice_ws/install/flody_test_suite/lib/python3.10/site-packages/flody_test_suite/flody_test_suite_node.py", line 58
-    FlodyTestSuite.arrive_pos   e.theta = 3.14059265359
-                                ^
-SyntaxError: invalid syntax
-
