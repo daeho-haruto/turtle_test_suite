@@ -3,7 +3,7 @@ import os
 from glob import glob
 
 
-package_name = 'flody_test_suite'
+package_name = 'turtle_test_suite'
 
 setup(
     name=package_name,
@@ -14,6 +14,8 @@ setup(
             glob(os.path.join('launch', '*.launch.py'))),
         (os.path.join('share', package_name, 'config'), 
             glob(os.path.join('config', '*.yaml'))),
+        # (os.path.join('share', package_name, 'action'), 
+        #     glob(os.path.join('action', '*.action'))),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
@@ -27,9 +29,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-			'sub = flody_test_suite.sub:main',
-            'pub = flody_test_suite.pub:main',
-            'flody_test_suite_node = flody_test_suite.flody_test_suite_node:main',
+            'sub = ' + package_name + '.sub:main',
+            'pub = ' + package_name + '.pub:main',
+            'turtle_test_suite_node = ' 
+                + package_name + '.turtle_test_suite_node:main',
         ],
     },
 )
