@@ -167,7 +167,7 @@ class TurtleTestSuite(Node):
 
 def main(args=None):
     """main 
-
+    
     Attributes:
         excutor : 노드를 멀티 스레딩 하게 해준다.
     """
