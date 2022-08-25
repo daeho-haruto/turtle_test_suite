@@ -13,12 +13,6 @@ def generate_launch_description():
         'params.yaml'
     )
 
-    # action = os.path.join(
-    #     get_package_share_directory('turtle_test_suite'),
-    #     'action',
-    #     'TurtleStart.action'
-    # )
-
     turtle_test_suite_node = Node(
         package="turtle_test_suite",
         executable="turtle_test_suite_node",

@@ -1,12 +1,13 @@
+from tabnanny import check
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionServer
 from rclpy.executors import MultiThreadedExecutor
 
-from msg_srv_action_interface_example.action import TurtleStart
+from turtle_test_suite_msgs.action import TurtleStart
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
-
+from turtle_test_suite_msgs.msg import Start
 
 class TurtleTestSuite(Node):
     """turtlesim을 제어하는 노드
@@ -25,7 +26,8 @@ class TurtleTestSuite(Node):
 
         declare_parameter : distance 파라미터 선언
         subscriber_pose : turtle1/pose 토픽 subscriber
-        start_action_server : turtlestart의 action server
+        # start_action_server : turtlestart의 action server
+        subscriber_start : turtle1/start 토픽 subscriber
         publisher_cmdvel : turtle1/cmd_vel 토픽 publisher
         timer : 0.1초마다 cmd_vel_callback 메서드 실행
     """
@@ -51,12 +53,21 @@ class TurtleTestSuite(Node):
             10
         )
 
+        self.subscriber_start = self.create_subscription(
+            Start,
+            'turtle1/start',
+            self.start_callback,
+            10
+        )
+
+        """
         self.start_action_server = ActionServer(
             self,
             TurtleStart,
             'turtlestart',
             self.start_action_callback
         )
+        """
 
         self.publisher_cmdvel = self.create_publisher(
             Twist,
@@ -69,6 +80,17 @@ class TurtleTestSuite(Node):
             self.cmd_vel_callback
         )
 
+    def start_callback(self, start):
+        if start.data == 1:
+            self.arrive_pose.x = self.pose.x + self.param
+            self.arrive_pose.theta = self.pose.theta
+            self.arrive_list = [
+                self.arrive_pose.x,
+                self.arrive_pose.theta,
+                self.pose.x
+            ]
+
+    '''
     def start_action_callback(self, goal_handle):
         """액션 값이 들어오면 실행되는 메서드
 
@@ -89,7 +111,7 @@ class TurtleTestSuite(Node):
 
         feedback_msg = TurtleStart.Feedback()
 
-        if goal_handle.request.order == "go":
+        if goal_handle.request.order == 1:
             self.arrive_pose.x = self.pose.x + self.param
             self.arrive_pose.theta = self.pose.theta
             self.arrive_list = [
@@ -146,6 +168,7 @@ class TurtleTestSuite(Node):
 
         else:
             self.get_logger().info('please check the data..')
+    '''
 
     def pose_callback(self, pose):
         """subscribe 할 때 pose 값 가져오는 메서드
@@ -162,12 +185,39 @@ class TurtleTestSuite(Node):
 
         publisher_cmdvel에 self.cmd_vel을 publish합니다.
         """
+        if self.arrive_list:
+            if self.arrive_idx == 0:
+                if self.arrive_list[self.arrive_idx] >= self.pose.x:
+                    self.cmd_vel.linear.x = 1.0
+                    self.cmd_vel.angular.z = 0.0
+                else:
+                    self.arrive_idx = 1
+
+            elif self.arrive_idx == 1:
+                if self.arrive_list[self.arrive_idx] <= self.pose.theta:
+                    self.cmd_vel.linear.x = 0.0
+                    self.cmd_vel.angular.z = 0.1
+                else:
+                    self.arrive_idx = 2
+
+            elif self.arrive_idx == 2:
+                if self.arrive_list[self.arrive_idx] <= self.pose.x:
+                    self.cmd_vel.linear.x = 1.0
+                    self.cmd_vel.angular.z = 0.0
+                else:
+                    self.arrive_idx = 3
+            else:
+                self.cmd_vel.linear.x = 0.0
+                self.cmd_vel.angular.z = 0.0
+        else:
+            pass
+
         self.publisher_cmdvel.publish(self.cmd_vel)
 
 
 def main(args=None):
     """main
-    
+
     Attributes:
         excutor : 노드를 멀티 스레딩 하게 해준다.
     """
