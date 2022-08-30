@@ -1,0 +1,3 @@
+turtle_test_suite_node:
+    ros__parameters:
+        distance: 1.0
