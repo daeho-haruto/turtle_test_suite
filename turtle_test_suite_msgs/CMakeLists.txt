@@ -11,6 +11,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Start.msg"
+  "action/TurtleStart.action"
 )
 
 if(BUILD_TESTING)

@@ -1,7 +1,10 @@
-int16 order
+# Request
+string order
 ---
+# Result
 float32 goal
 ---
+# Feedback
 float32 x
 float32 y
 float32 theta

@@ -10,9 +10,9 @@ setup(
     version='0.0.0',
     packages=[package_name],
     data_files=[
-        (os.path.join('share', package_name, 'launch'), 
+        (os.path.join('share', package_name, 'launch'),
             glob(os.path.join('launch', '*.launch.py'))),
-        (os.path.join('share', package_name, 'config'), 
+        (os.path.join('share', package_name, 'config'),
             glob(os.path.join('config', '*.yaml'))),
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -22,15 +22,13 @@ setup(
     zip_safe=True,
     maintainer='daeho',
     maintainer_email='daeho@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='turtlesim control',
+    license='BSD',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'sub = ' + package_name + '.sub:main',
-            'pub = ' + package_name + '.pub:main',
-            'turtle_test_suite_node = ' 
-                + package_name + '.turtle_test_suite_node:main',
+            'turtle_test_suite_node = '
+                + package_name + '.turtle_test_suite_node:main'
         ],
     },
 )
